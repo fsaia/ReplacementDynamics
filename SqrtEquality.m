@@ -1,0 +1,98 @@
+/////////////////////////////////////////////
+// 1) Define the function field and rings //
+/////////////////////////////////////////////
+
+// Define a function field in parameters c and d.
+K<c> := FunctionField(Rationals());
+K<d> := FunctionField(K);
+
+// Define a polynomial ring in y over K.
+P<x> := PolynomialRing(K);
+
+//////////////////////////////////////////////////////////
+// 2) Define the original quartic polynomial f(y)       //
+//    with coefficients based on your given expression. //
+//////////////////////////////////////////////////////////
+
+// Coefficients for f(y)
+A_   := 16*c^2 * d^3 * (d - c)^2;
+B_   := 8*c * d^2 * (d + c) * (d - c)^2;
+C_   := (d^4+6*c*d^3+12*c^2*d^2-2*c^3*d-c^4) * (d - c);
+D_ := (d^3 + 7*c*d^2 - 3*c^2*d - c^3)*(d - c);
+E_   := (d^3 - 2*c*d^2 + 5*c^2*d + c^3);
+
+// Construct the quartic polynomial f(y)
+f := A_*x^4 + B_*x^3 + C_*x^2 + D_*x + E_;
+
+// print "Original quartic f(y):";
+// print f;
+
+//////////////////////////////////////////////////////
+// 3) Normalize by dividing f(y) by the leading coeff //
+//////////////////////////////////////////////////////
+
+// Divide by A_ to get a monic polynomial.
+f1 := f / A_;
+
+
+//////////////////////////////////////////////////////
+// 4) Define coefficients of the associated depressed 
+// quartic (no cubic term)
+//////////////////////////////////////////////////////
+
+a := (-3*B_^2)/(8*A_^2) + (C_/A_);
+b := (B_^3)/(8*A_^3) - (B_*C_)/(2*A_^2) + (D_/A_);
+c_ := -3*(B_)^4/(256*A_^4) + C_*(B_)^2/(16*A_^3) - (B_*D_)/(4*A_^2) + E_/A_;
+
+
+// rational numbers relevant in solving associated cubic
+
+p := -a^2/12-c_;
+q := -a^3/108 + a*c_/3 - b^2/8;
+r_pq := (q^2/4 + p^3/27);
+
+
+// root of f1 is value of square root appearing in solution to the cubic
+
+f1 := x^2 - (q^2/4 + p^3/27);
+
+L<alpha> := ext< K | f1 >;
+P<x> := PolynomialRing(L);
+
+
+// root of f2 is value of cubed root appearing in solution to the cubic
+
+f2:= x^3 + q/2 - alpha; 
+
+f2Fac := Factorization(f2); // factors as product of linear and quadratic in y
+
+// taking w to be root of the linear factor 
+w := -1*(-3072*c^4*d^8 + 6144*c^5*d^7 - 3072*c^6*d^6)/(d^8 - 12*c*d^7 +
+        84*c^2*d^6 - 340*c^3*d^5 + 374*c^4*d^4 - 132*c^5*d^3 - 44*c^6*d^2 +
+        4*c^7*d + c^8)*alpha + (-1/96/c^2*d^4 + 1/16/c*d^3 - 1/4*d^2 +
+        1/48*c*d + 1/96*c^2)/(d^4 - c*d^3); // w2 has a linear factor in y, and this is the corresponding root
+
+// taking w to instead be a root of the quadratic factor (see quadratic root file for this path)
+// L<w> := ext< L | f2Fac[2][1] >;
+
+// solution to the associated cubic 
+y := a/6 + w - p/(3*w);
+
+// equality implied by 2y-a = -2y-a+(2b/sqrt(2y-a)) (which would give a rational root)
+equality_y := 8*y^3 -4*a*y^2 - b^2;
+
+// print "equality: ";
+// print equality_y;
+
+// Note: denominator of equality_y expression is simply d^9*(d - c)^3, with roots not of interest to us
+
+// G below is the scaled numerator of the equality_y expression
+
+G := -25*d^12 + 405*c*d^11 - 4752*c^2*d^10 + 37104*c^3*d^9 - 172194*c^4*d^8 +
+    438210*c^5*d^7 - 517584*c^6*d^6 + 114504*c^7*d^5 + 51027*c^8*d^4 -
+    10879*c^9*d^3 - 1608*c^10*d^2 + 240*c^11*d^1 + 16*c^12; 
+
+// G defines a singular rational curve C in P^2 in variables c, d over Q, of arithmetic genus 55 and 
+// geometric genus 0, with a single (ordinary, multiplicity 12) singularity at (0,0). 
+// C has no other rational points; it has no points over \Q_3.
+// See the file SqrtEqualityCurve.m for this computation. 
