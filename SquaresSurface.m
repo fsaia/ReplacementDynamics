@@ -15,4 +15,4 @@ X := ProjectiveClosure(S);
 XSing := SingularSubscheme(X); // 1-dimensional singular locus 
 
 // point search up to height bound 
-// [P : P in PointSearch(X,10^4) | ((P[1] ne 0) and (P[2] ne 0)) and (P[1] ne P[2])];
+// [P : P in PointSearch(X,5*10^3) | ((P[1] ne 0) and (P[2] ne 0)) and (P[1] ne P[2])];
