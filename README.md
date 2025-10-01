@@ -1,5 +1,5 @@
 # ReplacementDynamics
-Magma code for the paper "Replacement dynamics of binary quadratic forms" by Raghav Bhutani and Frederick Saia.
+Magma code for the paper "Replacement dynamics of binary quadratic forms" by Raghav Bhutani and Frederick Saia ([arXiv:2508.05816](https://arxiv.org/abs/2508.05816)).
 
 ## Contents
 
